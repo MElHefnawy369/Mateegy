@@ -57,5 +57,11 @@ public class SignIn extends AppCompatActivity {
                 startActivity(new Intent(SignIn.this, SignUp.class));
             }
         });
+        forgetpass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignIn.this, ForgetPassword.class));
+            }
+        });
     }
 }
