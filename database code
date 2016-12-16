@@ -1,0 +1,71 @@
+CREATE TABLE Users
+(
+UserID INT not null AUTO_INCREMENT, primary key (UserID),
+FName varchar(100) not null,
+MName varchar(100) not null,
+LName varchar(100) not null,
+Mail varchar(255) not null, unique key (Mail),
+Password varchar(20) not null,
+BDate DATE not null,
+State varchar(100) not null
+);
+
+CREATE TABLE Places
+(
+PlaceID int not null AUTO_INCREMENT, primary key (PlaceID),
+Rating float not null,
+Longitude float not null,
+Latitude float not null,
+UserID int not null, foreign key (UserID) references Users(UserID)
+UNIQUE Location (Longitude, Latitude);
+);
+
+CREATE TABLE Taste
+(
+Description varchar(100) not null, primary key (Description),
+UserID int not null, foreign key (UserID) references Users(UserID)
+PlaceID int, foreign key (PlaceID) references Places(PlaceID)
+);
+
+CREATE TABLE CheckIn
+(
+CheckInID int not null AUTO_INCREMENT, Primary key (CheckInID),
+UserID int not null, foreign key (UserID) references Users(UserID),
+PlaceID int not null, foreign key (PlaceID) references Places(PlaceID),
+Caption varchar(10000),
+Time DATETIME not null,
+Likes int
+UNIQUE Check_in (PlaceID, UserID)
+);
+
+CREATE TABLE Comments
+(
+Content varchar(10000) not null,
+UserID int not null, foreign key (UserID) references Users(UserID),
+CheckInID int not null, foreign key (CheckInID) references CheckIn(CheckInID)
+Unique comment_id (UserID, CheckInID)
+);
+
+CREATE TABLE Brands 
+(
+BrandID int not null AUTO_INCREMENT, Primary key (BrandID),
+Twitter varchar(100),
+Facebook varchar(100),
+UserID int not null, foreign key (UserID) references Users(UserID),
+Unique brand_id (Twitter, Facebook)
+);
+
+CREATE TABLE Follows
+(
+UserID int not null, foreign key (UserID) references Users(UserID),
+BrandID int not null, foreign key (BrandID) references Brands(BrandID),
+UNIQUE follow_id (UserID, BrandID)
+);
+
+CREATE TABLE Tips
+(
+Description varchar(10000) not null,
+PlaceID int not null, foreign key (PlaceID) references Places(PlaceID),
+UserID int, foreign key (UserID) references Users(UserID),
+BrandID int, foreign key (BrandID) references Brands(BrandID)
+);
