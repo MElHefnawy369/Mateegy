@@ -35,6 +35,7 @@ public class SignUp extends AppCompatActivity {
 	private ResultSet Rs;
     private String query1;
     private String query2;
+    private String DBMail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
