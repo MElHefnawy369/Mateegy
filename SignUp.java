@@ -1,5 +1,6 @@
 package com.example.mohamedelhefnawy.socialnetwork;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,11 +9,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
 import java.sql.DriverManager;
-import java.sql.SQLDataException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SignUp extends AppCompatActivity {
 
@@ -30,20 +32,18 @@ public class SignUp extends AppCompatActivity {
     private String userNameinput , mailinput , passwordinput , confirmPasswordinput , answerquestioninput , questioninput;
     private Integer questionnumber;
     private Connection Con;
-	private Statement St1;
+    private Statement St1;
     private Statement St2;
-	private ResultSet Rs;
+    private ResultSet Rs;
     private String query1;
     private String query2;
     private String DBMail;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup);
-        
-        
+
         userName = (EditText) findViewById(R.id.email) ;
         mail = (EditText) findViewById(R.id.editText4) ;
         password = (EditText) findViewById(R.id.password) ;
@@ -54,13 +54,13 @@ public class SignUp extends AppCompatActivity {
         insertanswer=(TextView) findViewById(R.id.insertanswer);
         answerquestion=(EditText) findViewById(R.id.answerquestion);
         try{
-        Con = DriverManager.getConnection("jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6149201","sql6149201","KyR5SDXGgK");
-        St1 = Con.createStatement();
-        St2 = Con.createStatement();
+            Con = DriverManager.getConnection("jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6149201","sql6149201","KyR5SDXGgK");
+            St1 = Con.createStatement();
+            St2 = Con.createStatement();
         }
         catch(SQLException e){
-			// show here that we can't connect to Database
-		}
+           // incorrectPassword.setText("please try again later");
+        }
 
         this.arraySpinner = new String[] {
                 "What's Your Pet name?", "What's Your Cousin name?", "What's Your favourite food?", "What's Your Uncle's name?", "What's Your flat number?","What's Your favourite color?"
@@ -77,7 +77,6 @@ public class SignUp extends AppCompatActivity {
                 passwordinput = password.getText().toString();
                 answerquestioninput = answerquestion.getText().toString();
                 questioninput = questions.getSelectedItem().toString();
-
                 switch (questioninput) {
                     case "What's Your Pet name?":
                         questionnumber = 1;
@@ -97,32 +96,38 @@ public class SignUp extends AppCompatActivity {
                     case "What's Your favourite color?":
                         questionnumber = 6;
                         break;
-                } 
+                }
                 query1 = "SELECT Mail FROM Users WHERE Mail = '"+ mailinput +"';";
                 query2 = "INSERT INTO Users ('UserName','Mail','Password','Q" + answerquestioninput + "') values ('"+userNameinput+"','"+mailinput+"','"+passwordinput+"','"+answerquestioninput+"');";
                 try{
-                Rs = St1.executeQuery(query1);
-                DBMail = Rs.getString("Users.Mail"); --> Error in Users Variable !!!
+                    Rs = St1.executeQuery(query1);
+                    DBMail = Rs.getString("Users.Mail");
                 }
                 catch(SQLException e){
-                                         // show here that we can't connect to Database
-		        }
-                confirmPasswordinput = confirmPassword.getText().toString();
+                    incorrectPassword.setText("please try again later");
+                }
+                //confirmPasswordinput = confirmPassword.getText().toString();
                 if((passwordinput.length())<=8){
                     incorrectPassword.setText("Password is too short (It should be equal or more than 8 characters");
                 }
                 //else if(!(passwordinput.equals(confirmPasswordinput))){
                 //    incorrectPassword.setText("Password is NOT matched");
-                }
+                //}
                 else if(mailinput == DBMail){
-                    //Condition for same Username in database
-                }
+                //Condition for same Username in database
+            }
                 else {try{St2.executeUpdate(query2);
-                         }
-                      catch(SQLException e){
-			           	                   // show here that we can't connect to Database
-		                }
+                    startActivity(new Intent(SignUp.this, TransitionToSignIn.class));
                 }
+                catch(SQLException e){
+                    incorrectPassword.setText("please try again later");
+                }
+                    /*Save User data in data base*/
+                    /*Transfer to transition page from signup to sign in*/
+                            //startActivity(new Intent(SignUp.this, TransitionToSignIn.class));
+
+                }
+
             }
         });
 
