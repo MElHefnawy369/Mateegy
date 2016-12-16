@@ -102,7 +102,7 @@ public class SignUp extends AppCompatActivity {
                 query2 = "INSERT INTO Users ('UserName','Mail','Password','Q" + answerquestioninput + "') values ('"+userNameinput+"','"+mailinput+"','"+passwordinput+"','"+answerquestioninput+"');";
                 try{
                 Rs = St1.executeQuery(query1);
-                DBMail = Rs.getString(Users.Mail);
+                DBMail = Rs.getString("Users.Mail");
                 }
                 catch(SQLException e){
                                          // show here that we can't connect to Database
