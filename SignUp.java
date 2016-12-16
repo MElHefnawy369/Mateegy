@@ -23,6 +23,7 @@ public class SignUp extends AppCompatActivity {
     private EditText answerquestion;
     private String[] arraySpinner;
     private String userNameinput , mailinput , passwordinput , confirmPasswordinput , answerquestioninput , questioninput;
+    private Integer questionnumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,7 @@ public class SignUp extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, arraySpinner);
         questions.setAdapter(adapter);
-        questioninput = questions.getSelectedItem().toString();
-    createAccountButton.setOnClickListener(new View.OnClickListener() {
+        createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 userNameinput = userName.getText().toString();
@@ -56,7 +56,27 @@ public class SignUp extends AppCompatActivity {
                 passwordinput = password.getText().toString();
                 answerquestioninput = answerquestion.getText().toString();
                 questioninput = questions.getSelectedItem().toString();
-                //confirmPasswordinput = confirmPassword.getText().toString();
+                switch (questioninput) {
+                    case "What's Your Pet name?":
+                        questionnumber = 1;
+                        break;
+                    case "What's Your Cousin name?":
+                        questionnumber = 2;
+                        break;
+                    case "What's Your favourite food?":
+                        questionnumber = 3;
+                        break;
+                    case "What's Your Uncle's name?":
+                        questionnumber = 4;
+                        break;
+                    case "What's Your flat number?":
+                        questionnumber = 5;
+                        break;
+                    case "What's Your favourite color?":
+                        questionnumber = 6;
+                        break;
+                }
+                confirmPasswordinput = confirmPassword.getText().toString();
                 if((passwordinput.length())<=8){
                     incorrectPassword.setText("Password is too short (It should be equal or more than 8 characters");
                 }
