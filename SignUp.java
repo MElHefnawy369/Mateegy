@@ -59,7 +59,7 @@ public class SignUp extends AppCompatActivity {
             St2 = Con.createStatement();
         }
         catch(SQLException e){
-           // incorrectPassword.setText("please try again later");
+           incorrectPassword.setText("please try again later");
         }
 
         this.arraySpinner = new String[] {
