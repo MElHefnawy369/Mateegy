@@ -1,11 +1,8 @@
-package com.example.mohamedelhefnawy.socialnetwork;
+package com.example.mohamedelhefnawy.socialnetwork_2;
 
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by MohamedElHefnawy on 12/11/2016.
- */
 
 
 public class NormalUser implements Serializable {

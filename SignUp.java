@@ -1,4 +1,4 @@
-package com.example.mohamedelhefnawy.socialnetwork;
+package com.example.mohamedelhefnawy.socialnetwork_2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SignUp extends AppCompatActivity {
@@ -21,7 +25,6 @@ public class SignUp extends AppCompatActivity {
     private EditText userName;
     private EditText mail;
     private EditText password;
-    private EditText confirmPassword;
     private Button createAccountButton;
     private TextView incorrectPassword;
     private Spinner questions;
@@ -29,41 +32,28 @@ public class SignUp extends AppCompatActivity {
     private TextView insertanswer;
     private EditText answerquestion;
     private String[] arraySpinner;
-    private String userNameinput , mailinput , passwordinput , confirmPasswordinput , answerquestioninput , questioninput;
+    private String userNameinput , mailinput , passwordinput  , answerquestioninput , questioninput;
     private Integer questionnumber;
-    private Connection Con;
-    private Statement St1;
-    private Statement St2;
-    private ResultSet Rs;
-    private String query1;
-    private String query2;
-    private String DBMail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.signup);
 
         userName = (EditText) findViewById(R.id.email) ;
         mail = (EditText) findViewById(R.id.editText4) ;
         password = (EditText) findViewById(R.id.password) ;
-        //confirmPassword = (EditText) findViewById(R.id.editText2) ;
         createAccountButton = (Button) findViewById(R.id.signIn);
         incorrectPassword = (TextView) findViewById(R.id.error);
         insertquestion=(TextView) findViewById(R.id.insertquestion);
         insertanswer=(TextView) findViewById(R.id.insertanswer);
         answerquestion=(EditText) findViewById(R.id.answerquestion);
-        try{
-            Con = DriverManager.getConnection("jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6149201","sql6149201","KyR5SDXGgK");
-            St1 = Con.createStatement();
-            St2 = Con.createStatement();
-        }
-        catch(SQLException e){
-           incorrectPassword.setText("please try again later");
-        }
+
 
         this.arraySpinner = new String[] {
-                "What's Your Pet name?", "What's Your Cousin name?", "What's Your favourite food?", "What's Your Uncle's name?", "What's Your flat number?","What's Your favourite color?"
+                "What's Your Pet name?", "What's Your Cousin name?", "What's Your favourite food?", "What's Your Uncle's name?", "What's Your flat number?","What's Your favourite color?","1","2","2","2","2"
         };
         questions = (Spinner) findViewById(R.id.spinner2);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -97,38 +87,35 @@ public class SignUp extends AppCompatActivity {
                         questionnumber = 6;
                         break;
                 }
-                query1 = "SELECT Mail FROM Users WHERE Mail = '"+ mailinput +"';";
-                query2 = "INSERT INTO Users ('UserName','Mail','Password','Q" + answerquestioninput + "') values ('"+userNameinput+"','"+mailinput+"','"+passwordinput+"','"+answerquestioninput+"');";
-                try{
-                    Rs = St1.executeQuery(query1);
-                    DBMail = Rs.getString("Users.Mail");
-                }
-                catch(SQLException e){
-                    incorrectPassword.setText("please try again later");
-                }
-                //confirmPasswordinput = confirmPassword.getText().toString();
-                if((passwordinput.length())<=8){
-                    incorrectPassword.setText("Password is too short (It should be equal or more than 8 characters");
-                }
-                //else if(!(passwordinput.equals(confirmPasswordinput))){
-                //    incorrectPassword.setText("Password is NOT matched");
-                //}
-                else if(mailinput == DBMail){
-                //Condition for same Username in database
-            }
-                else {try{St2.executeUpdate(query2);
-                    startActivity(new Intent(SignUp.this, TransitionToSignIn.class));
-                }
-                catch(SQLException e){
-                    incorrectPassword.setText("please try again later");
-                }
-                    /*Save User data in data base*/
-                    /*Transfer to transition page from signup to sign in*/
-                            //startActivity(new Intent(SignUp.this, TransitionToSignIn.class));
+                ParseQuery<ParseObject> query5 = ParseQuery.getQuery("NormalUser");
+                query5.whereEqualTo("mail", mailinput);
+                query5.getFirstInBackground(new GetCallback<ParseObject>() {
+                    @Override
+                    public void done(ParseObject userFromDB, ParseException e) {
+                        if (userFromDB != null) {
+                            Toast.makeText(SignUp.this, "you are already registered", Toast.LENGTH_LONG).show();
+                        } else {
+                            if ((passwordinput.length()) <= 8) {
+                                incorrectPassword.setText("Password is too short (It should be equal or more than 8 characters");
+                            } else {
+                                ParseObject newUser = new ParseObject("NormalUser");
+
+                                newUser.put("userName", userNameinput);
+                                newUser.put("mail", mailinput);
+                                newUser.put("password", passwordinput);
+                                newUser.put("questionNumber", questionnumber);
+                                newUser.put("question", questioninput);
+                                newUser.put("answerQuestion", answerquestioninput);
+
+                                newUser.saveInBackground();
+                                startActivity(new Intent(SignUp.this, TransitionToSignIn.class));
+                            }
+                        }
+                    }});
 
                 }
 
-            }
+
         });
 
     }

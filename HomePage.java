@@ -1,4 +1,4 @@
-package com.example.mohamedelhefnawy.socialnetwork;
+package com.example.mohamedelhefnawy.socialnetwork_2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,19 +13,50 @@ import android.widget.Button;
 public class HomePage extends AppCompatActivity {
 
     private Button logoutbutton;
-
+    private Button checkinrequest;
+    private Button searchButton;
+    private Button searchFriend;
+    private String mailinput2;
+    private int flag =0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-        Intent i = getIntent();
-        NormalUser activeUser = (NormalUser) i.getSerializableExtra("sample Object");
-
+        mailinput2= getIntent().getStringExtra("mailinput");
         logoutbutton = (Button) findViewById(R.id.logout);
+        checkinrequest = (Button) findViewById(R.id.checkinrequest);
+        searchButton = (Button) findViewById(R.id.toSearch);
+        searchFriend = (Button) findViewById(R.id.tosearchfriend);
+
         logoutbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomePage.this, SignIn.class));
+
+                flag=1;
+                Intent intent = new Intent(HomePage.this, SignIn.class);
+                intent.putExtra("flag",flag);
+                startActivity(intent);
+            }
+        });
+        checkinrequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePage.this, CheckIn.class);
+                intent.putExtra("mailinput2",mailinput2);
+                startActivity(intent);
+            }
+        });
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomePage.this, SearchForPlace.class));
+            }
+        });
+
+        searchFriend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomePage.this, SearchForFriend.class));
             }
         });
     }

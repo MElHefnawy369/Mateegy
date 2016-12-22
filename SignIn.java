@@ -1,4 +1,4 @@
-package com.example.mohamedelhefnawy.socialnetwork;
+package com.example.mohamedelhefnawy.socialnetwork_2;
 
 
 import android.content.Intent;
@@ -8,31 +8,39 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.DriverManager;
-import java.sql.SQLDataException;
 
-import static com.example.mohamedelhefnawy.socialnetwork.R.id.email;
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
+
+import static com.example.mohamedelhefnawy.socialnetwork_2.R.id.email;
 
 public class SignIn extends AppCompatActivity {
     private EditText username;
     private EditText passward;
     private Button signin,forgetpass,createnew;
     private TextView error;
-    private String email_inp,passward_inp;
-    private Connection Con;
-	private Statement St;
-	private ResultSet Rs;
-    private String query;
-    private String DBMail;
-    private String DBPassword;
+    private String email_inp,passward_inp,pp;
+    private int flag;
+    static public UserData currentUserData;
+    private String currentUserName;
+    private String currentUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin);
+        flag = getIntent().getIntExtra("flag",0);
+        if(flag!=1){
+        Parse.initialize(new Parse.Configuration.Builder(this)
+                .applicationId("3QYuv1xDPcx8jjLoJE01E3f0RTJVlhgjyHX5O94c")
+                .clientKey("U37tmIlz8iQorU0mkR8KHz3id6jR081cAeeTF62p")
+                .server("https://parseapi.back4app.com/").build()
+        );}
 
         username= (EditText) findViewById(email);
         passward= (EditText) findViewById(R.id.pass);
@@ -40,43 +48,45 @@ public class SignIn extends AppCompatActivity {
         forgetpass= (Button) findViewById(R.id.forgetPass);
         createnew= (Button) findViewById(R.id.createNew);
         error= (TextView) findViewById(R.id.error);
-        try{
-            Con = DriverManager.getConnection("jdbc:mysql://sql6.freemysqlhosting.net:3306/sql6149201","sql6149201","KyR5SDXGgK");
-            St = Con.createStatement();
-        }
-        catch(SQLException e){
-			    // show here that we can't connect to Database
-		}
 
-        View.OnClickListener ourOnClickListener = new View.OnClickListener() {
+        signin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 email_inp = username.getText().toString();
                 passward_inp = passward.getText().toString();
-                query = "SELECT Mail, Password FROM Users WHERE Mail = '"+email_inp+"';";
-                try{Rs = St.executeQuery(query);
-                    DBMail = Rs.getString("Users.Mail");
-                    DBPassword = Rs.getString("Users.Password");
-                   }catch(SQLException e){
-                    // show here that we can't connect to Database
-                }
-                    
-               if (email_inp == DBMail && password_inp = DBPassword){
-               
-                    //move to homepage
-                }else{
-                    String error_mess= "Wrong Passward or wrong E-mail";
-                    error.append(error_mess);
-                }
-                /*attributes of activated user should be more than what is written according to database*/
-                /*NormalUser activatedUser = new NormalUser(email_inp,passward_inp);
-                Intent i = new Intent(SignIn.this, HomePage.class);
-                i.putExtra("sample Object", activatedUser);
-                startActivity(i);*/
-                startActivity(new Intent(SignIn.this, HomePage.class));
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("NormalUser");
+                query.whereEqualTo("mail", email_inp);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    public void done(List<ParseObject> userlist, ParseException e) {
+                        if (e != null) {
+                            String ee = ("Login Fail Please Verify Your Email first");
+                            error.append(ee);
+                        }else if (userlist.size()==0){
+                            error.append("This mail is not registered");}
+                        else {
+                            for (ParseObject x : userlist) {
+                                pp = x.getString("password");
+                                currentUserName = x.getString("userName");
+                                currentUserID = x.getObjectId();
+                                if (pp.equals(passward_inp)){
+                                    currentUserData = new UserData(currentUserName, email_inp, currentUserID);
+                                    Intent intent = new Intent(SignIn.this, HomePage.class);
+                                    intent.putExtra("mailinput",email_inp);
+                                    startActivity(intent);
+                                }else{
+                                    String ee = ("Wrong Passward");
+                                    error.append(ee);
+                                }
+                            }
+
+                        }
+                    }
+                });
+
+
             }
-        };
-        signin.setOnClickListener(ourOnClickListener);
+        });
+
         createnew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

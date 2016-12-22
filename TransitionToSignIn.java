@@ -1,4 +1,4 @@
-package com.example.mohamedelhefnawy.socialnetwork;
+package com.example.mohamedelhefnawy.socialnetwork_2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,9 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-/**
- * Created by MohamedElHefnawy on 12/16/2016.
- */
+
 public class TransitionToSignIn extends AppCompatActivity {
 
     private TextView succesfulSignUP;
@@ -26,7 +24,7 @@ public class TransitionToSignIn extends AppCompatActivity {
         signUpToSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TransitionToSignIn.this, SignIn.class));
+                startActivity(new Intent(TransitionToSignIn.this, HomePage.class));
             }
         });
 

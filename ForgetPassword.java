@@ -1,4 +1,4 @@
-package com.example.mohamedelhefnawy.socialnetwork;
+package com.example.mohamedelhefnawy.socialnetwork_2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 /**
  * Created by MohamedElHefnawy on 12/16/2016.
@@ -27,6 +34,10 @@ public class ForgetPassword extends AppCompatActivity {
     private Button signinbutton;
     private String mailinput, answerquestioninput, questioninput;
     private Integer questionnumber;
+    private String pp;
+    private Integer num;
+    private TextView error_k;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +50,7 @@ public class ForgetPassword extends AppCompatActivity {
         insertanswerbefore = (TextView) findViewById(R.id.insertanswerbefore);
         answerbefore = (EditText) findViewById(R.id.answerquestionbefore);
         signinbutton = (Button) findViewById(R.id.signIn2);
+        error_k=(TextView) findViewById(R.id.errorof);
         this.arraySpinner = new String[]{
                 "What's Your Pet name?", "What's Your Cousin name?", "What's Your favourite food?", "What's Your Uncle's name?", "What's Your flat number?", "What's Your favourite color?"
         };
@@ -72,8 +84,31 @@ public class ForgetPassword extends AppCompatActivity {
                         questionnumber = 6;
                         break;
                 }
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("NormalUser");
+                query.whereEqualTo("mail", mailinput);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    public void done(List<ParseObject> userlist, ParseException e) {
+                        if (e != null) {
+                            String ee = ("Failure");
+                            error_k.append(ee);
+                        } else {
+                            for (ParseObject x : userlist) {
+                                num = x.getInt("questionNumber");
+                                pp = x.getString("answerQuestion");
+                                if (num != questionnumber) {
+                                    error_k.append("Wrong Question or Wrong Answer");
+                                } else if (pp.equals(answerquestioninput)) {
+                                    startActivity(new Intent(ForgetPassword.this, HomePage.class));
+                                } else {
+                                    error_k.append("Wrong Question or Wrong Answer");
+                                }
+                            }
+
+                        }
+                    }
+                });
                 // if(answerquestioninput==answer in database && mailinput= mail in database)
-                startActivity(new Intent(ForgetPassword.this, HomePage.class));
+                //startActivity(new Intent(ForgetPassword.this, HomePage.class));
 
             }
 
