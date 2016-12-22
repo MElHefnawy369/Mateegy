@@ -5,7 +5,7 @@
     android:id="@+id/signInPage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mohamedelhefnawy.socialnetwork.MainActivity"
+    tools:context="com.example.mohamedelhefnawy.socialnetwork_2.SignIn"
     android:background="#92d36e">
 
     <EditText
@@ -26,11 +26,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
         app:layout_constraintHorizontal_bias="0.45"
-        app:layout_constraintVertical_bias="0.46" />
+        app:layout_constraintVertical_bias="0.45" />
 
     <Button
         android:text="Sign In"
-        android:layout_width="wrap_content"
+        android:layout_width="88dp"
         android:id="@+id/signIn"
         android:layout_margin="10dp"
         android:elevation="10dp"
@@ -101,12 +101,12 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="16dp"
-        app:layout_constraintTop_toTopOf="@+id/email"
-        android:layout_marginTop="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="16dp"
-        app:layout_constraintVertical_bias="0.04"
-        app:layout_constraintHorizontal_bias="0.47" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55"
+        app:layout_constraintHorizontal_bias="0.46" />
 
     <ImageView
         android:layout_width="389dp"
@@ -166,7 +166,6 @@
         android:focusable="false" />
 
     <TextView
-        android:text="TextView"
         android:layout_width="68dp"
         android:layout_height="59dp"
         android:id="@+id/error"
